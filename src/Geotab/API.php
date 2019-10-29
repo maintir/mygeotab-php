@@ -22,22 +22,26 @@ class API
     private $client = null;
 
     /**
+     * @param Credentials $credentials the credentials to use
+     * @param Client|null $client the Guzzle client to use
+     * @throws \Exception
+     */
+    public function __construct(Credentials $credentials, Client $client = null) {
+
+        $this->setCredentials($credentials);
+        $this->setClient($client ?? $this->createHttpClient());
+
+        return $this;
+    }
+
+    /**
      * @param string $username Username/email address for MyGeotab server
      * @param string $password Password for MyGeotab server
      * @param string $database Database name on MyGeotab
      * @param string $server Server domain name on the MyGeotab federation (i.e. my.geotab.com)
-     * @throws \Exception
      */
-    public function __construct($username, $password = null, $database = null, $server = "my.geotab.com") {
-        if ($username == null) {
-            throw new \Exception("Username is required");
-        }
-        
-        $this->credentials = new Credentials($username, $password, $database, $server);
-
-        $this->client = $this->createHttpClient();
-
-        return $this;
+    public static function createCredentials($username, $password, $database, $server) {
+        return new Credentials($username, $password, $database, $server);
     }
 
     /**
@@ -151,9 +155,25 @@ class API
     /**
      * @param Credentials|null $credentials
      */
-    public function setCredentials($credentials)
+    public function setCredentials(Credentials $credentials = null)
     {
         $this->credentials = $credentials;
+    }
+
+    /**
+     * @return Client|null
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param Client $client
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
     }
 
     /**

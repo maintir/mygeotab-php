@@ -8,8 +8,12 @@ class Credentials {
     private $database;
     private $server;
 
-    function __construct($username, $password, $database, $server)
+    function __construct($username, $password, $database, $server = 'my.geotab.com')
     {
+        if (empty($username)) {
+            throw new \Exception("Username is required");
+        }
+
         $this->username = $username;
         $this->password = $password;
         $this->database = $database;
